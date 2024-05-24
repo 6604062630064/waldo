@@ -1,6 +1,6 @@
 "use client";
 import { Image, useDisclosure } from "@nextui-org/react";
-import { FormEvent, use, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import TimeContext from "@/components/Context";
 import SubmitModal from "@/components/SubmitModal";
 import Waldo from "@/assets/waldo.jpg";
