@@ -17,6 +17,9 @@ export default function RootLayout({
 	const [stopTimer, setStopTimer] = useState<boolean>(true);
 	return (
 		<html lang="en" className="light">
+			<head>
+				<title>Waldo</title>
+			</head>
 			<body className={inter.className}>
 				{/* <MenuContext.Provider value={[isHidden, setIsHidden]}> */}
 				<Providers>
