@@ -4,10 +4,6 @@ import { Button, Link } from "@nextui-org/react";
 import Wally from "@/assets/wally.png";
 
 export default function Home() {
-	// const onPress = (e: PressEvent): void => {
-	// 	console.log(e);
-	// };
-
 	return (
 		<main className="px-3">
 			<div className="m-auto mt-52 flex max-w-screen-sm flex-col items-center gap-3 border-2 border-black p-2 ">

@@ -12,7 +12,7 @@ type CordinatesType = [
 	React.Dispatch<React.SetStateAction<{ x: number; y: number }>>,
 ];
 
-const charactersCordinates = {
+const charactersCordinates: { [key: string]: { x: number; y: number } } = {
 	wally: { x: 85.3645, y: 74.1988 },
 };
 
@@ -38,33 +38,41 @@ export default function GamePage() {
 
 	useEffect(() => {
 		if (Object.values(foundCharacters).every((element) => element === true)) {
-			setStopTimer(true);
+			if (setStopTimer) {
+				setStopTimer(true);
+			}
+
 			onOpen();
 		}
-		return () => setStopTimer(true);
+		return () => {
+			if (setStopTimer) setStopTimer(true);
+		};
 	}, [endTime]);
 
 	useEffect(() => {
 		if (Object.values(foundCharacters).every((element) => element === true)) {
 			setEndTime(Date.now());
-			console.log("win");
 		}
 	}, [foundCharacters]);
 
 	const onSubmit: (e: FormEvent) => void = async (e) => {
 		e.preventDefault();
-
+		const headers = new Headers();
+		headers.set("Origin", process.env.FRONTEND_URL as string);
 		const formData = new FormData(e.currentTarget as HTMLFormElement);
 		formData.append("time_spent", (endTime - startTime).toString());
-		const urlSearchParam = new URLSearchParams(formData);
+
+		const urlSearchParams = new URLSearchParams();
+		for (const [key, value] of formData.entries()) {
+			urlSearchParams.append(key, value as string);
+		}
 
 		const response = await fetch(`${process.env.HOST}/leaderboard`, {
+			credentials: "include",
 			method: "POST",
 			mode: "cors",
-			body: urlSearchParam,
-			headers: {
-				Origin: process.env.FRONTEND_URL,
-			},
+			body: urlSearchParams,
+			headers: headers,
 		});
 
 		if (response.ok) {
@@ -75,7 +83,7 @@ export default function GamePage() {
 	const onLoad: () => void = () => {
 		if (setStartTime) {
 			setStartTime(Date.now());
-			setStopTimer(false);
+			if (setStopTimer) setStopTimer(false);
 		}
 	};
 
@@ -106,7 +114,6 @@ export default function GamePage() {
 		const posX = (e.pageX / imageWidth) * 100;
 		const posY = ((e.pageY - headerHeight) / imageHeight) * 100;
 
-		console.log({ x: posX, y: posY });
 		setImageCordinates({ x: posX, y: posY });
 		setCordinates({
 			x: e.pageX,

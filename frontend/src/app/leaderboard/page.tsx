@@ -8,16 +8,15 @@ type scoreObjectType = {
 };
 
 const getLeaderboard: () => Promise<null | scoreObjectType[]> = async () => {
+	const headers = new Headers();
+	headers.set("Origin", process.env.FRONTEND_URL as string);
 	const response = await fetch(`${process.env.HOST}/leaderboard`, {
+		credentials: "include",
 		method: "GET",
 		mode: "cors",
 		cache: "no-store",
-		headers: {
-			Origin: process.env.FRONTEND_URL,
-		},
+		headers: headers,
 	});
-
-	console.log(response.ok);
 
 	if (response.ok) {
 		const data = await response.json();

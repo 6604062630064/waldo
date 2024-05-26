@@ -2,7 +2,7 @@
 
 const nextConfig = {
 	env: {
-		HOST: "http://localhost:5000",
+		HOST: "https://api2.cloudvista.dev",
 		FRONTEND_URL: "https://waldo.cloudvista.dev",
 	},
 };
