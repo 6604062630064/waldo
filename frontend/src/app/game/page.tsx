@@ -5,6 +5,7 @@ import TimeContext from "@/components/Context";
 import SubmitModal from "@/components/SubmitModal";
 import Waldo from "@/assets/waldo.jpg";
 import DropdownMenu from "@/components/DropdownMenu";
+import { useRouter } from "next/navigation";
 
 type CordinatesType = [
 	{ x: number; y: number },
@@ -22,6 +23,7 @@ type FoundCharactersType = [
 ];
 
 export default function GamePage() {
+	const router = useRouter();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [startTime, setStartTime, stopTimer, setStopTimer] =
 		useContext(TimeContext);
@@ -49,12 +51,26 @@ export default function GamePage() {
 		}
 	}, [foundCharacters]);
 
-	const onSubmit: (e: FormEvent) => void = (e) => {
+	const onSubmit: (e: FormEvent) => void = async (e) => {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget as HTMLFormElement);
+		formData.append("time_spent", (endTime - startTime).toString());
 		const urlSearchParam = new URLSearchParams(formData);
-		console.log(urlSearchParam);
+
+		const response = await fetch(`${process.env.HOST}/leaderboard`, {
+			method: "POST",
+			mode: "cors",
+			body: urlSearchParam,
+			headers: {
+				Origin: process.env.FRONTEND_URL,
+			},
+		});
+
+		if (response.ok) {
+			router.push("/leaderboard");
+			router.refresh();
+		}
 	};
 	const onLoad: () => void = () => {
 		if (setStartTime) {
@@ -100,12 +116,6 @@ export default function GamePage() {
 	};
 	return (
 		<>
-			{/* <div
-				className={`fixed z-40 max-w-14`}
-				style={{ left: windowWidth / 2 - 50, top:  }}
-			>
-				<MdArrowForwardIos className="z-auto size-14 -rotate-90" />
-			</div> */}
 			<Image
 				fetchPriority="high"
 				src={Waldo.src}

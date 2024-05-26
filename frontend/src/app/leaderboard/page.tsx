@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 type scoreObjectType = {
 	id: number;
 	name: string;
@@ -9,7 +11,13 @@ const getLeaderboard: () => Promise<null | scoreObjectType[]> = async () => {
 	const response = await fetch(`${process.env.HOST}/leaderboard`, {
 		method: "GET",
 		mode: "cors",
+		cache: "no-store",
+		headers: {
+			Origin: process.env.FRONTEND_URL,
+		},
 	});
+
+	console.log(response.ok);
 
 	if (response.ok) {
 		const data = await response.json();
@@ -18,7 +26,6 @@ const getLeaderboard: () => Promise<null | scoreObjectType[]> = async () => {
 		return null;
 	}
 };
-
 export default async function LeaderBoard() {
 	const response: null | scoreObjectType[] = await getLeaderboard();
 
@@ -33,10 +40,10 @@ export default async function LeaderBoard() {
 						</tr>
 					</thead>
 					<tbody>
-						{response?.map((e) => (
-							<tr className="h-12 hover:bg-[#ecedff]">
+						{response?.map((e, index) => (
+							<tr className="h-12 hover:bg-[#ecedff]" key={index}>
 								<td className="pl-8">{e.name}</td>
-								<td>{e.time_spent}</td>
+								<td>{e.time_spent / 1000}</td>
 							</tr>
 						))}
 					</tbody>
